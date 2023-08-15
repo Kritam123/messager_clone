@@ -2,14 +2,14 @@
 import { Dialog, Transition } from '@headlessui/react'
 import { IoClose, IoTrash } from 'react-icons/io5'
 
-import useotherUser from '@/app/hooks/useotherUser';
 import { Conversation, User } from '@prisma/client';
 import { format } from 'date-fns';
 import React, { useMemo,Fragment, useState } from 'react'
-import Avatar from '@/app/Components/Avatar';
-import AvatarGroup from '@/app/Components/AvatarGroup';
 import ConfirmModal from './ConfirmModal';
-import useActiveList from '@/app/hooks/useActiveList';
+import useotherUser from '../../../hooks/useotherUser';
+import useActiveList from '../../../hooks/useActiveList';
+import AvatarGroup from '../../../Components/AvatarGroup';
+import Avatar from '../../../Components/Avatar';
 interface ProfileDrawerProps{
     data:Conversation &{
         users:User[]
