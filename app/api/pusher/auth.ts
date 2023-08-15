@@ -1,8 +1,8 @@
 import { NextApiRequest, NextApiResponse } from "next"
 import { getServerSession } from "next-auth";
+import { authOptions } from "../auth/[...nextauth]/route";
+import { pusherServer } from "../../libs/pusher";
 
-import { pusherServer } from "@/app/libs/pusher";
-import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 
 export default async function handler(
   request: NextApiRequest, 

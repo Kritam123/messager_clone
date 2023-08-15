@@ -1,7 +1,5 @@
 "use client";
 import axios from "axios";
-import Button from "@/app/Components/Inputs/Button";
-import Input from "@/app/Components/Inputs/Input";
 import { useCallback, useEffect, useState } from "react";
 import { BsGithub, BsGoogle } from "react-icons/bs";
 import { useForm, FieldValues, SubmitHandler } from "react-hook-form";
@@ -9,6 +7,8 @@ import AuthSocialButton from "./AuthSocialButton";
 import { toast } from "react-hot-toast";
 import { signIn, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import Input from "../../Components/Inputs/Input";
+import Button from "../../Components/Button";
 type Variant = "Login" | "Register";
 const AuthForm = () => {
   const session = useSession();
@@ -108,7 +108,7 @@ const AuthForm = () => {
             errors={errors}
           />
           <div>
-            <Button type="submit" fullwidth disabled={loading}>
+            <Button type="submit" fullWidth disabled={loading}>
               {variant === "Login" ? "Sign in" : "Register"}
             </Button>
           </div>

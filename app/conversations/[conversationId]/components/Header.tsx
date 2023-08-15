@@ -1,15 +1,15 @@
 "use client";
 
-import Avatar from "@/app/Components/Avatar";
-import useotherUser from "@/app/hooks/useotherUser";
 import { Conversation, User } from "@prisma/client";
 import Link from "next/link";
 import React, { useMemo, useState } from "react";
 import { HiChevronLeft } from "react-icons/hi";
 import { HiEllipsisHorizontal } from "react-icons/hi2";
 import ProfileDrawer from "./ProfileDrawer";
-import AvatarGroup from "@/app/Components/AvatarGroup";
-import useActiveList from "@/app/hooks/useActiveList";
+import useotherUser from "../../../hooks/useotherUser";
+import useActiveList from "../../../hooks/useActiveList";
+import AvatarGroup from "../../../Components/AvatarGroup";
+import Avatar from "../../../Components/Avatar";
 interface HeaderProps {
   conversation: Conversation & {
     users: User[];

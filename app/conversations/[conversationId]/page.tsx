@@ -1,9 +1,9 @@
-import EmptyState from "@/app/Components/EmptyState";
-import getConversationById from "@/app/action/getConversationById";
-import getMessages from "@/app/action/getMessages";
 import Header from "./components/Header";
 import Body from "./components/Body";
 import Form from "./components/Form";
+import getConversationById from "../../action/getConversationById";
+import getMessages from "../../action/getMessages";
+import EmptyState from "../../Components/EmptyState";
 interface IParams {
   conversationId: string;
 }

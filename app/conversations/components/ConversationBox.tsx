@@ -4,10 +4,10 @@ import React, { useCallback,useMemo } from "react";
 import {format} from "date-fns"
 import { useSession } from "next-auth/react";
 import clsx from "clsx";
-import { FullConversationType } from "@/app/types";
-import useotherUser from "@/app/hooks/useotherUser";
-import Avatar from "@/app/Components/Avatar";
-import AvatarGroup from "@/app/Components/AvatarGroup";
+import { FullConversationType } from "../../types";
+import useotherUser from "../../hooks/useotherUser";
+import AvatarGroup from "../../Components/AvatarGroup";
+import Avatar from "../../Components/Avatar";
 
 interface ConversationBoxProps{
     data:FullConversationType,

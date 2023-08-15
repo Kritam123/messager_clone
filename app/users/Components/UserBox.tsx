@@ -1,10 +1,10 @@
 "use client";
-import Avatar from "@/app/Components/Avatar";
-import LoadingModal from "@/app/Components/LoadingModal";
 import { User } from "@prisma/client";
 import axios from "axios";
 import { useRouter } from "next/navigation";
 import { useCallback, useState } from "react";
+import LoadingModal from "../../Components/LoadingModal";
+import Avatar from "../../Components/Avatar";
 interface UserBoxProps {
   data: User;
 }
