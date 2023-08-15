@@ -22,7 +22,6 @@ const ConfirmModal: React.FC<ConfirmModalProps> = ({
   const router = useRouter();
   const { conversationId } = useConversation();
   const [isLoading, setIsLoading] = useState(false);
-  
   const onDelete = useCallback(() => {
     setIsLoading(true);
 
