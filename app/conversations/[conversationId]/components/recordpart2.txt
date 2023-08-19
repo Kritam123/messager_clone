@@ -1,0 +1,109 @@
+import React, { useState, useRef, useEffect } from "react";
+import { MdDelete } from "react-icons/md";
+import { HiPaperAirplane } from "react-icons/hi2";
+import { FaPause, FaPlay } from "react-icons/fa";
+import WaveSurfer from "wavesurfer.js";
+import RecordPlugin from "wavesurfer.js/dist/plugins/record";
+
+interface RecoderInputProps {
+  onClose: () => void;
+}
+const RecoderInput: React.FC<RecoderInputProps> = ({ onClose }) => {
+  const [isRecording, setIsRecording] = useState(true);
+  const [recordedAudio, setRecordedAudio] = useState(null);
+  const [waveform, setWaveForm] = useState(null);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const audioRef = useRef(null);
+  const mediaRecordedRef = useRef(null);
+  const waveRef = useRef(null);
+  const wavesurfer = WaveSurfer.create({
+    container: waveRef.current,
+    waveColor: 'rgb(200, 0, 200)',
+    progressColor: 'rgb(100, 0, 100)',
+  })
+  const record = wavesurfer.registerPlugin(RecordPlugin.create());
+  // Render recorded audio
+record.on('record-end', (blob) => {
+  const recordedUrl = URL.createObjectURL(blob)
+  const container = waveRef.current
+
+  const wavesurfer = WaveSurfer.create({
+    container,
+    waveColor: 'rgb(200, 100, 0)',
+    progressColor: 'rgb(100, 50, 0)',
+    url: recordedUrl,
+  })
+  wavesurfer.on('interaction', () => wavesurfer.playPause())
+});
+  const formateTime = (time) => {
+    if (isNaN(time)) return "00:00";
+    const min = Math.floor(time / 60);
+    const sec = Math.floor(time % 60);
+    return `${min.toString().padStart(2, "0")}:${sec
+      .toString()
+      .padStart(2, "0")}`;
+  };
+ 
+  useEffect(() => {
+    record.isRecording();
+    return () => {
+      record.destroy()
+    }
+  }, [])
+  
+  return (
+    <>
+      <div className="flex gap-5  items-center w-80">
+        <button>
+          <MdDelete onClick={onClose} size={26} className="text-black" />
+        </button>
+        {isRecording ? (
+          <div className="text-[#0EA5E9] animate-pulse 2-60 text-center text-sm">
+            <span>{recordingDuration}</span>
+          </div>
+        ) : (
+          <>
+            {recordedAudio && (
+              <>
+                <div className=" bg-slate-200 rounded-2xl w-64 h-14 py-4 px-2 flex items-center overflow-hidden">
+                  {!isPlaying ? (
+                    <FaPause
+                     
+                      size={20}
+                      className="text-black hover:cursor-pointer"
+                    />
+                  ) : (
+                    <FaPlay
+                      size={20}
+                      className="text-black hover:cursor-pointer"
+                    />
+                  )}
+
+                  <div className="w-60" ref={waveRef} />
+                  {recordedAudio && isPlaying && (
+                    <span>{formateTime(currentPlaybackTime)}</span>
+                  )}
+                  {recordedAudio && !isPlaying && (
+                    <span>{formateTime(totalDuration)}</span>
+                  )}
+                  <audio ref={audioRef} hidden />
+                </div>
+              </>
+            )}
+          </>
+        )}
+      </div>
+      <button className="rounded-full p-2 hover:bg-sky-600 bg-sky-500 cursor-pointer transition ml-8">
+        <HiPaperAirplane
+          size={20}
+          className="text-white "
+        />
+      </button>
+    </>
+  );
+};
+
+export default RecoderInput;

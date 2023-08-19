@@ -1,0 +1,124 @@
+ const [isRecording, setIsRecording] = useState(true);
+  const [recordedAudio, setRecordedAudio] = useState(null);
+  const [waveform, setWaveForm] = useState(null);
+  const [recordingDuration, setRecordingDuration] = useState(0);
+  const [currentPlaybackTime, setCurrentPlaybackTime] = useState(0);
+  const [totalDuration, setTotalDuration] = useState(0);
+  const [isPlaying, setIsPlaying] = useState(true);
+  const audioRef = useRef(null);
+  const mediaRecordedRef = useRef(null);
+  const waveRef = useRef(null);
+
+  useEffect(() => {
+    let interval;
+    if (isRecording) {
+      interval = setInterval(() => {
+        setRecordingDuration((prev) => {
+          setTotalDuration(prev + 1);
+          return prev + 1;
+        });
+      }, 1000);
+    }
+    return () => {
+      clearInterval(interval);
+    };
+  }, [isRecording]);
+
+  useEffect(() => {
+    const wavesurfer = WaveSurfer.create({
+      container: waveRef.current,
+      waveColor: "#4F4A85",
+      progressColor: "#383351",
+    });
+    setWaveForm(wavesurfer as any);
+    wavesurfer.on("finish", () => {
+      setIsPlaying(false);
+    });
+    return () => {
+      wavesurfer.destroy();
+    };
+  }, []);
+  useEffect(() => {
+    if (waveform) {
+      handleStartRecord();
+    }
+  }, [waveform]);
+
+  const handleStartRecord = () => {
+    setRecordingDuration(0);
+    setCurrentPlaybackTime(0);
+    setTotalDuration(0);
+    setIsRecording(true);
+    navigator.mediaDevices
+      .getUserMedia({ audio: true })
+      .then((stream) => {
+        const mediaRecoder = new MediaRecorder(stream);
+        mediaRecordedRef.current = mediaRecoder;
+        audioRef.current.srcObject = stream;
+        const chunks = [];
+        mediaRecoder.ondataavailable = (e) => chunks.push(e.data);
+        mediaRecoder.onstop = () => {
+          const blob = new Blob(chunks, { type: "audio/ogg;codecs=opus" });
+          const audioUrl = URL.createObjectURL(blob);
+          const audio = new Audio(audioUrl);
+          setRecordedAudio(audio);
+          waveform.load(audioUrl);
+        };
+        mediaRecoder.start();
+      })
+      .catch((error) => {
+        console.error("error", error);
+      });
+  };
+  const handleStopRecord = () => {
+    if (mediaRecordedRef.current && isRecording) {
+      mediaRecordedRef.current.stop();
+      setIsRecording(false);
+      waveform.stop();
+      const audioChucks = [];
+      mediaRecordedRef.current.addEventListener("dataavailable", (e) => {
+        audioChucks.push(e.data);
+      });
+      mediaRecordedRef.current.addEventListener("stop", () => {
+        const audioBlob = new Blob(audioChucks, { type: "audio/mp3" });
+        const audiofile = new File([audioBlob], "recording.mp3");
+        setRecordedAudio(audiofile);
+      });
+    }
+  };
+  useEffect(() => {
+    if (recordedAudio) {
+      const updatePlaybackTime = () => {
+        setCurrentPlaybackTime(recordedAudio.currentTime);
+      };
+      recordedAudio.addEventListener("timeupdate", updatePlaybackTime);
+    }
+
+    return () => {
+      recordedAudio.removeEventListener("timeupdate", updatePlaybackTime);
+    };
+  }, [recordedAudio]);
+
+  const handlePlayRecord = () => {
+    if (recordedAudio) {
+      waveform.stop();
+      waveform.play();
+      recordedAudio.play();
+      setIsPlaying(true);
+    }
+  };
+  const handlePauseRecord = () => {
+    waveform.stop();
+    recordedAudio.pause();
+    setIsPlaying(false);
+  };
+  const sendRecording = async () => {};
+
+  const formateTime = (time) => {
+    if (isNaN(time)) return "00:00";
+    const min = Math.floor(time / 60);
+    const sec = Math.floor(time % 60);
+    return `${min.toString().padStart(2, "0")}:${sec
+      .toString()
+      .padStart(2, "0")}`;
+  };

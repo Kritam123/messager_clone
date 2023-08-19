@@ -72,7 +72,7 @@ const ConversationBox:React.FC<ConversationBoxProps> = ({data,selected,conversat
                 <p
                 className="text-lg font-medium text-gray-900"
                 >
-                    {data.name || otherUser.name}
+                    {data.name?.length! > 10 ? data.name?.slice(0,10) + "...": data.name|| otherUser.name?.length!>10 ? otherUser.name?.slice(0,10).concat("..."):otherUser.name}
                 </p>
                 {lastMessage?.createdAt && (
                   <p

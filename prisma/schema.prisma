@@ -67,8 +67,8 @@ model Message {
   id String @id @default(auto()) @map("_id") @db.ObjectId
   body String?
   image String?
+  voiceMessage String?
   createdAt DateTime @default(now())
-
   seenIds String[] @db.ObjectId
   seen User[] @relation("Seen", fields: [seenIds], references: [id])
 
