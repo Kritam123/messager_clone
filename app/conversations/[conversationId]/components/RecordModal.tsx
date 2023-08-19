@@ -144,19 +144,6 @@ const RecordModal: React.FC<RecordModalProps> = ({ isOpen, onClose }) => {
       setIsPlaying(false);
     }
   };
-  const sendVoiceMessage = async(result: any) => {
-    console.log(re)
-    try {
-      const response = await axios.post("/api/messages", {
-        voiceMessage:renderedAudio,
-        conversationId,
-      });
-
-    } catch (error) {
-      console.log(error)
-    }
-    
-  };
   return (
     <Transition.Root show={isOpen} as={Fragment}>
       <Dialog as="div" className="relative z-50" onClose={handleTimer}>
@@ -323,7 +310,6 @@ const RecordModal: React.FC<RecordModalProps> = ({ isOpen, onClose }) => {
                             <span>{formateTime(totalDuration)}</span>
                           </div>
                             <button
-                            onClick={sendVoiceMessage}
                             type="submit"
                             className="rounded-full p-2 hover:bg-sky-600 bg-sky-500 cursor-pointer transition"
                             >
